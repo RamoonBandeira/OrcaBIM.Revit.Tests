@@ -45,6 +45,27 @@ namespace Onbox.Revit.Tests
             Assert.Throws<ModificationOutsideTransactionException>(() => wallService.CreateWall(doc, line));
         }
 
+        [Test]
+        public void CreatesWallsWithCorrectLength()
+        {
+            var collector = new CollectorService();
+            var wallService = new WallCreatorService(collector);
+            var line = Line.CreateBound(XYZ.Zero, XYZ.BasisX.Multiply(10));
+
+            Wall wall;
+
+            using (Transaction t = new Transaction(this.doc, "Create Wall"))
+            {
+                t.Start();
+                wall = wallService.CreateWall(doc, line);
+                t.Commit();
+            }
+
+            Assert.NotNull(wall);
+
+            Assert.AreEqual(line.Length, (wall.Location as LocationCurve).Curve.Length, 0.01);
+        }
+
         [OneTimeTearDown]
         public void CloseRevitProj()
         {
