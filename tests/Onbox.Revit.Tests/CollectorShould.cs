@@ -26,7 +26,7 @@ namespace Onbox.Revit.Tests
         }
 
         [OneTimeTearDown]
-        public void CLoseRevitProj()
+        public void CloseRevitProj()
         {
             this.doc.Close(false);
         }
